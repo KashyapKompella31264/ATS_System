@@ -25,3 +25,20 @@ Build a candidate ranking system that identifies the top candidates for a given 
 - Inspect 100 candidate records
 - Perform feature discovery
 - Design scoring functions
+
+## Day 1 of Implementation
+
+# Candidate Ranking System
+
+Hack2Skill India Runs Challenge
+
+## Structure
+
+- Candidate Loader
+- Document Builder
+- Feature Extraction
+- Ranking Engine
+
+## Run
+
+python -m tests.test_candidate_loader
