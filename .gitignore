@@ -9,3 +9,6 @@ data/raw
 data/processed/
 
 .ipynb_checkpoints/
+
+src/artifact/
+*.npy
