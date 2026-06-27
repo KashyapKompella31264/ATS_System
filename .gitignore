@@ -1,14 +1,20 @@
+# Python
 __pycache__/
 *.pyc
 
+# Virtual Environment
+candidate-ranking-system/
+.venv/
 venv/
-.env
+data/raw/
 
-outputs/
-data/raw
-data/processed/
+# Artifacts
+artifact/
 
-.ipynb_checkpoints/
+# IDE
+.vscode/
+.idea/
 
-src/artifact/
-*.npy
+# OS
+.DS_Store
+Thumbs.db

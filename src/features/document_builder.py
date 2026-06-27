@@ -72,3 +72,52 @@ DESCRIPTION:
         )
 
     return "\n".join(document)
+
+
+
+def build_skill_document(candidate):
+
+    document = []
+
+    document.append("SKILLS:")
+
+    for skill in candidate.get("skills", []):
+
+        document.append(
+            f"""
+SKILL:
+{skill.get("name","")}
+
+PROFICIENCY:
+{skill.get("proficiency","")}
+
+EXPERIENCE:
+{skill.get("duration_months",0)} months
+
+ENDORSEMENTS:
+{skill.get("endorsements",0)}
+"""
+        )
+
+    assessments = (
+        candidate.get("redrob_signals", {})
+                 .get("skill_assessment_scores", {})
+    )
+
+    if assessments:
+
+        document.append("SKILL ASSESSMENTS:")
+
+        for skill, score in assessments.items():
+
+            document.append(
+                f"""
+SKILL:
+{skill}
+
+ASSESSMENT SCORE:
+{score}
+"""
+            )
+
+    return "\n".join(document)

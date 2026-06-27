@@ -12,8 +12,6 @@ def load_jd_embeddings():
     return np.load("artifact/jd_embedding.npy")
 
 def calculate_semantic_scores():
-    print(np.load("artifact/jd_embedding.npy").shape)
-    print(np.load("artifact/candidate_general_embeddings.npy").shape)
     candidate_embedding=load_candidate_embeddings()
     jd_embedding=load_jd_embeddings()
     similarities = cosine_similarity(
@@ -36,7 +34,7 @@ def semantic_search(top_k=5000):
     for idx in top_indices:
 
         results.append({
-            "candidate_id": candidate_ids[idx],
+            "candidate_id": str(candidate_ids[idx]),
             "index": int(idx),
             "semantic_score": float(scores[idx])
         })
