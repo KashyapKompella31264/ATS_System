@@ -1,34 +1,51 @@
-CONSULTING_COMPANIES={
+CONSULTING_COMPANIES = {
     "tcs",
     "infosys",
     "capgemini",
     "wipro",
     "accenture",
     "cognizant",
-    "tech mahindra"
-    "mindtree"
-    "globex frim"
+    "tech mahindra",
+    "mindtree",
+    "globex firm"
 }
 
-def consulting_ratio(candidate):
+
+def product_company_score(candidate):
 
     history = candidate.get(
         "career_history",
         []
     )
 
-    total = len(history)
+    if len(history) == 0:
+        return 0
 
-    consulting = 0
+    consulting_months = 0
+    total_months = 0
 
     for job in history:
 
-        company = job["company"].lower()
+        company = job.get(
+            "company",
+            ""
+        ).lower()
 
-        if company in CONSULTING_COMPANIES:
-            consulting += 1
+        months = job.get(
+            "duration_months",
+            0
+        )
 
-    if total == 0:
+        total_months += months
+
+        for consulting_company in CONSULTING_COMPANIES:
+
+            if consulting_company in company:
+
+                consulting_months += months
+                break
+
+    if total_months == 0:
         return 0
 
-    return consulting / total
+    return consulting_months / total_months

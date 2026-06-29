@@ -72,6 +72,18 @@ def parse_jd():
                 "Embedding Models",
                 "Large Language Models"
             ],
+            "preferred_titles": [
+                "AI Engineer",
+                "Machine Learning Engineer",
+                "ML Engineer",
+                "Software Engineer",
+                "Backend Engineer",
+                "Recommendation Engineer",
+                "Search Engineer",
+                "Retrieval Engineer",
+                "Ranking Engineer",
+                "Data Scientist"
+            ],
             "required_skills": [
                 "Python",
                 "Machine Learning",

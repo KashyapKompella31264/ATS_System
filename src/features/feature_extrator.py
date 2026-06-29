@@ -19,4 +19,5 @@ def feature_extrator(candidate):
             signals["saved_by_recruiters_30d"],
         "github_score":
             signals["github_activity_score"]
+            
     }

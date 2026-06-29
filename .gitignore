@@ -10,7 +10,7 @@ data/raw/
 
 # Artifacts
 artifact/
-
+output/
 # IDE
 .vscode/
 .idea/
