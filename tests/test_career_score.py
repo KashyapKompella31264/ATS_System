@@ -53,10 +53,6 @@ for result in results:
         output["relevant_experience_score"]
     )
 
-    print(
-        "Career Progression :",
-        output["career_progression_score"]
-    )
 
     print(
         "Consulting Company :",
@@ -72,5 +68,8 @@ for result in results:
         "Current Role :",
         output["current_role_score"]
     )
-
+    print(
+        "evaluation score: ",
+        output["evaluation_score"]
+    )
     print("-" * 60)

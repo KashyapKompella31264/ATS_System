@@ -1,6 +1,5 @@
 from src.parser.candidate_loader import load_candidates
 from src.parser.jd_parser import parse_jd
-
 from src.scoring.semantic_score import semantic_search
 from src.scoring.domain_score import calculate_domain_score
 from src.scoring.consistency_score import calculate_consistency_score
@@ -18,7 +17,7 @@ candidates = load_candidates(
 
 jd_features = parse_jd()
 
-results = semantic_search(10)
+results = semantic_search(20)
 
 print("=" * 80)
 print("Top 10 Candidate Score Breakdown")

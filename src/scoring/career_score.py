@@ -1,5 +1,5 @@
 from src.utils.company_classifier import product_company_score
-
+from src.scoring.evaluation_score import calculate_evaluation_score
 
 # --------------------------------------------------------
 # Years of Experience
@@ -280,18 +280,19 @@ def calculate_career_score(
         candidate,
         jd_features
     )
-
+    evaluation=calculate_evaluation_score(candidate)
     career = (
 
-        0.30 * years +
+        0.28 * years +
 
-        0.25 * relevant +
+        0.22 * relevant +
 
-        0.20 * consulting +
+        0.18 * consulting +
 
         0.15 * stability +
 
-        0.10 * current
+        0.10 * current+
+        0.07 * evaluation["evaluation_score"]
 
     )
 
@@ -305,7 +306,7 @@ def calculate_career_score(
             relevant,
             2
         ),
-
+        "evaluation_score": round(evaluation["evaluation_score"]),
 
         "consulting_company_score": round(
             consulting,

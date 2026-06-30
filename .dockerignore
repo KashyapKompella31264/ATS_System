@@ -1,0 +1,15 @@
+.venv
+.git
+.gitignore
+__pycache__
+*.pyc
+
+artifact
+output
+data
+demo
+
+.vscode
+.idea
+
+*.log

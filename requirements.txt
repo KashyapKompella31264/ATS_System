@@ -1,8 +1,8 @@
-pandas
+gradio
 numpy
-sentence-transformers
+pandas
 scikit-learn
-faiss-cpu
+sentence-transformers
+transformers
+huggingface-hub
 tqdm
-pyyaml
-jupyter

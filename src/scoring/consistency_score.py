@@ -1,19 +1,36 @@
+import os
 import numpy as np
-
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# ----------------------------------------------------
-# Load embeddings once
-# ----------------------------------------------------
+_ARTIFACT_CACHE = {}
 
-CAREER_EMBEDDINGS = np.load(
-    "artifact/candidate_career_embeddings.npy"
-)
 
-SKILL_EMBEDDINGS = np.load(
-    "artifact/candidate_skill_embeddings.npy"
-)
+def load_embeddings(artifact_dir="artifact"):
+
+    if artifact_dir in _ARTIFACT_CACHE:
+        return _ARTIFACT_CACHE[artifact_dir]
+
+    career_embeddings = np.load(
+        os.path.join(
+            artifact_dir,
+            "candidate_career_embeddings.npy"
+        )
+    )
+
+    skill_embeddings = np.load(
+        os.path.join(
+            artifact_dir,
+            "candidate_skill_embeddings.npy"
+        )
+    )
+
+    _ARTIFACT_CACHE[artifact_dir] = (
+        career_embeddings,
+        skill_embeddings
+    )
+
+    return _ARTIFACT_CACHE[artifact_dir]
 
 
 # ----------------------------------------------------
@@ -99,13 +116,17 @@ def assessment_score(candidate):
 # Embedding Similarity
 # ----------------------------------------------------
 
-def embedding_consistency(candidate_index):
+def embedding_consistency(candidate_index,artifact_dir="artifact"):
 
-    career = CAREER_EMBEDDINGS[
+    career_embeddings, skill_embeddings = load_embeddings(
+    artifact_dir
+)
+    
+    career = career_embeddings[
         candidate_index
     ].reshape(1, -1)
 
-    skills = SKILL_EMBEDDINGS[
+    skills = skill_embeddings[
         candidate_index
     ].reshape(1, -1)
 
@@ -123,10 +144,12 @@ def embedding_consistency(candidate_index):
 
 def calculate_consistency_score(
         candidate,
-        candidate_index):
+        candidate_index,
+        artifact_dir="artifact"):
 
     embedding = embedding_consistency(
-        candidate_index
+        candidate_index,
+        artifact_dir
     )
 
     duration = duration_score(candidate)
@@ -134,7 +157,7 @@ def calculate_consistency_score(
     proficiency = proficiency_score(candidate)
 
     assessment = assessment_score(candidate)
-    similarity= embedding_consistency(candidate_index)
+    similarity= embedding
     if assessment>0:
 
         consistency = (

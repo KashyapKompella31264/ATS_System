@@ -1,16 +1,20 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# Virtual Environment
-candidate-ranking-system/
+# Virtual environment
 .venv/
-venv/
-data/raw/
 
-# Artifacts
+# Generated artifacts
 artifact/
 output/
+data/
+
+# Temporary files
+*.log
+*.tmp
+
 # IDE
 .vscode/
 .idea/

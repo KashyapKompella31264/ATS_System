@@ -1,22 +1,47 @@
+import os
 import json
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# --------------------------------------------------------
-# Load artifacts once
-# --------------------------------------------------------
+_ARTIFACT_CACHE = {}
 
-CANDIDATE_EMBEDDINGS = np.load(
-    "artifact/candidate_career_embeddings.npy"
-)
+def load_domain_artifacts(artifact_dir="artifact"):
 
-DOMAIN_EMBEDDINGS = np.load(
-    "artifact/domain_embeddings.npy"
-)
+    if artifact_dir in _ARTIFACT_CACHE:
+        return _ARTIFACT_CACHE[artifact_dir]
 
-with open("artifact/domain_labels.json", "r") as f:
-    DOMAIN_LABELS = json.load(f)
+    candidate_embeddings = np.load(
+        os.path.join(
+            artifact_dir,
+            "candidate_career_embeddings.npy"
+        )
+    )
+
+    domain_embeddings = np.load(
+        os.path.join(
+            artifact_dir,
+            "domain_embeddings.npy"
+        )
+    )
+
+    with open(
+        os.path.join(
+            artifact_dir,
+            "domain_labels.json"
+        ),
+        "r"
+    ) as f:
+
+        domain_labels = json.load(f)
+
+    _ARTIFACT_CACHE[artifact_dir] = (
+        candidate_embeddings,
+        domain_embeddings,
+        domain_labels
+    )
+
+    return _ARTIFACT_CACHE[artifact_dir]
 
 
 # --------------------------------------------------------
@@ -43,15 +68,23 @@ DOMAIN_WEIGHTS = {
 # Calculate Domain Score
 # --------------------------------------------------------
 
-def calculate_domain_score(candidate_index):
+def calculate_domain_score(candidate_index, artifact_dir="artifact"):
 
-    candidate_embedding = CANDIDATE_EMBEDDINGS[
+    (
+    candidate_embeddings,
+    domain_embeddings,
+    domain_labels
+) = load_domain_artifacts(
+    artifact_dir
+)
+    
+    candidate_embedding = candidate_embeddings[
         candidate_index
     ].reshape(1, -1)
 
     similarities = cosine_similarity(
         candidate_embedding,
-        DOMAIN_EMBEDDINGS
+        domain_embeddings
     ).flatten()
 
     weighted_score = 0
@@ -61,7 +94,7 @@ def calculate_domain_score(candidate_index):
     similarity_scores = {}
 
     for label, similarity in zip(
-            DOMAIN_LABELS,
+            domain_labels,
             similarities):
 
         similarity_scores[label] = round(

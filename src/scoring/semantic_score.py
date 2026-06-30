@@ -1,42 +1,95 @@
-from sklearn.metrics.pairwise import cosine_similarity
+import os
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+_ARTIFACT_CACHE = {}
 
+def load_semantic_artifacts(artifact_dir="artifact"):
 
-def load_candidate_embeddings():
-    return np.load("artifact/candidate_general_embeddings.npy")
+    if artifact_dir in _ARTIFACT_CACHE:
+        return _ARTIFACT_CACHE[artifact_dir]
 
-def load_candidate_ids(): 
-    return np.load( "artifact/candidate_ids.npy", allow_pickle=True )
+    candidate_embeddings = np.load(
+        os.path.join(
+            artifact_dir,
+            "candidate_general_embeddings.npy"
+        )
+    )
 
-def load_jd_embeddings():
-    return np.load("artifact/jd_embedding.npy")
+    candidate_ids = np.load(
+        os.path.join(
+            artifact_dir,
+            "candidate_ids.npy"
+        ),
+        allow_pickle=True
+    )
 
-def calculate_semantic_scores():
-    candidate_embedding=load_candidate_embeddings()
-    jd_embedding=load_jd_embeddings()
+    jd_embedding = np.load(
+        os.path.join(
+            artifact_dir,
+            "jd_embedding.npy"
+        )
+    )
+
+    _ARTIFACT_CACHE[artifact_dir] = (
+        candidate_embeddings,
+        candidate_ids,
+        jd_embedding
+    )
+
+    return _ARTIFACT_CACHE[artifact_dir]
+
+def calculate_semantic_scores(artifact_dir="artifact"):
+
+    (
+    candidate_embeddings,
+    _,
+    jd_embedding
+) = load_semantic_artifacts(
+    artifact_dir
+)
+
     similarities = cosine_similarity(
-    jd_embedding.reshape(1, -1),
-    candidate_embedding
-).flatten()
+
+        jd_embedding.reshape(1, -1),
+
+        candidate_embeddings
+
+    ).flatten()
+
     return similarities
 
 
-def semantic_search(top_k=5000):
+def semantic_search(
+    top_k=5000,
+    artifact_dir="artifact"
+):
 
-    scores = calculate_semantic_scores()
+    scores = calculate_semantic_scores(
+        artifact_dir
+    )
 
     top_indices = np.argsort(scores)[::-1][:top_k]
 
-    candidate_ids = load_candidate_ids()
+    (
+    _,
+    candidate_ids,
+    _
+) = load_semantic_artifacts(
+    artifact_dir
+)
 
     results = []
 
     for idx in top_indices:
 
         results.append({
+
             "candidate_id": str(candidate_ids[idx]),
+
             "index": int(idx),
+
             "semantic_score": float(scores[idx])
+
         })
 
     return results
