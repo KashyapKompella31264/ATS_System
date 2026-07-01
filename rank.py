@@ -29,16 +29,27 @@ def main():
 
     )
 
+    parser.add_argument(
+
+        "--artifact-dir",
+
+        default="artifact",
+
+        help="Directory containing precomputed embeddings"
+
+    )
+
     args = parser.parse_args()
 
     results = rank_candidates(
 
         candidates_path=args.candidates,
 
-        top_k=100
+        top_k=100,
+
+        artifact_dir=args.artifact_dir
 
     )
-
     rows = []
 
     for rank, candidate in enumerate(results, start=1):

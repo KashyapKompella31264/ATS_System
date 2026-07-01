@@ -1,91 +1,131 @@
-def generate_reason(candidate_scores):
+def generate_reason(candidate, candidate_scores):
 
     reasons = []
 
-    # ---------------------------------------------
-    # Semantic
-    # ---------------------------------------------
+    # -------------------------------------------------
+    # Current Role
+    # -------------------------------------------------
+
+    current_role = (
+    candidate.get("profile", {})
+    .get("current_title", "")
+    )
+
+    if current_role:
+
+        reasons.append(
+            f"Current role: {current_role}"
+        )
+
+    # -------------------------------------------------
+    # Experience
+    # -------------------------------------------------
+
+    years = candidate.get(
+    "profile",
+    {}
+    ).get(
+        "years_of_experience",
+        None
+    )
+
+    if years is not None:
+
+        reasons.append(
+            f"{years} years of professional experience"
+        )
+
+    # -------------------------------------------------
+    # Top Skills
+    # -------------------------------------------------
+
+    skills = candidate.get("skills", [])
+
+    if skills:
+
+        top_skills = [
+            skill["name"]
+            for skill in skills[:4]
+            if "name" in skill
+        ]
+
+        if top_skills:
+
+            reasons.append(
+                "Key skills: " +
+                ", ".join(top_skills)
+            )
+
+    # -------------------------------------------------
+    # Strengths
+    # -------------------------------------------------
+
+    strengths = []
 
     if candidate_scores["semantic_score"] >= 65:
 
-        reasons.append(
-            "Excellent semantic match with the job description"
-        )
+        strengths.append("high semantic relevance")
 
-    elif candidate_scores["semantic_score"] >= 55:
+    if candidate_scores["career_score"] >= 80:
 
-        reasons.append(
-            "Strong semantic relevance to the job description"
-        )
-
-    # ---------------------------------------------
-    # Career
-    # ---------------------------------------------
-
-    if candidate_scores["career_score"] >= 85:
-
-        reasons.append(
-            "Strong and relevant career trajectory"
-        )
-
-    elif candidate_scores["career_score"] >= 70:
-
-        reasons.append(
-            "Relevant professional experience"
-        )
-
-    # ---------------------------------------------
-    # Consistency
-    # ---------------------------------------------
+        strengths.append("strong career progression")
 
     if candidate_scores["consistency_score"] >= 65:
 
-        reasons.append(
-            "Skills are highly consistent with work experience"
-        )
+        strengths.append("good skill consistency")
 
-    elif candidate_scores["consistency_score"] >= 55:
+    if candidate_scores["behavior_score"] >= 70:
 
-        reasons.append(
-            "Skills align well with career history"
-        )
-
-    # ---------------------------------------------
-    # Behavior
-    # ---------------------------------------------
-
-    if candidate_scores["behavior_score"] >= 75:
-
-        reasons.append(
-            "Highly active and recruiter-friendly profile"
-        )
-
-    elif candidate_scores["behavior_score"] >= 60:
-
-        reasons.append(
-            "Positive recruiter engagement signals"
-        )
-
-    # ---------------------------------------------
-    # Domain
-    # ---------------------------------------------
+        strengths.append("positive recruiter signals")
 
     if candidate_scores["domain_score"] >= 35:
 
-        reasons.append(
-            "Strong exposure to relevant AI domains"
-        )
+        strengths.append("relevant AI domain experience")
 
-    elif candidate_scores["domain_score"] >= 30:
+    if strengths:
 
         reasons.append(
-            "Experience in key target domains"
+            "Strengths: " +
+            ", ".join(strengths)
         )
 
-    if len(reasons) == 0:
+    # -------------------------------------------------
+    # Concerns
+    # -------------------------------------------------
+
+    concerns = []
+
+    notice = candidate.get(
+        "redrob_signals",
+        {}
+    ).get(
+        "notice_period_days",
+        0
+    )
+
+    if notice >= 60:
+
+        concerns.append(
+            f"{notice}-day notice period"
+        )
+
+    if candidate_scores["behavior_score"] < 50:
+
+        concerns.append(
+            "limited recruiter engagement"
+        )
+
+    if candidate_scores["consistency_score"] < 50:
+
+        concerns.append(
+            "skills need stronger career evidence"
+        )
+
+    if concerns:
 
         reasons.append(
-            "Overall good match for the role"
+            "Concern: " +
+            ", ".join(concerns)
         )
 
-    return "; ".join(reasons)
+    return ". ".join(reasons) + "."

@@ -36,15 +36,13 @@ docker build -t candidate-ranking-system .
 Run the following command by providing the path to the candidate dataset:
 
 ```bash
-python embedding_generator.py \
-    --candidates <path_to_candidates.jsonl>
+python -m src.features.embedding_generator --candidates <path_to_candidates.jsonl>
 ```
 
 Example:
 
 ```bash
-python embedding_generator.py \
-    --candidates data/raw/candidates.jsonl
+python -m src.features.embedding_generator --candidates data/raw/candidates.jsonl
 ```
 
 This generates the following artifacts inside the `artifact/` directory:
@@ -66,15 +64,12 @@ jd_embedding.npy
 Run the ranking pipeline by providing the path to the candidate dataset and the desired output location:
 
 ```bash
-python rank.py \
-    --candidates <path_to_candidates.jsonl> \
+python -m rank --candidates <path_to_candidates.jsonl> 
     --out <output_submission.csv>
 ```
 
 ```bash
-python rank.py \
-    --candidates data/raw/candidates.jsonl \
-    --out output/submission.csv
+python -m rank --candidates data/raw/my_candidates.jsonl --out output/my_submission.csv   
 ```
 
 The generated submission file will be available at

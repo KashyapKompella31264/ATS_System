@@ -104,7 +104,10 @@ def rank_candidates(candidates_path,top_k=100,artifact_dir="artifact"):
             "location_score":location_score
 
         }
-        reason=generate_reason(candidate_scores)
+        reason = generate_reason(
+    candidate,
+    candidate_scores
+)
         final_score = (
             semantic_score * WEIGHTS["semantic"] +
             career_score * WEIGHTS["career"] +

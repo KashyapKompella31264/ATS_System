@@ -72,15 +72,15 @@ def relevant_experience_score(candidate, jd_features):
 SENIORITY = {
 
     "intern": 1,
-
     "trainee": 2,
-
     "associate": 3,
-
     "junior": 4,
 
     "software engineer": 5,
     "backend engineer": 5,
+    "frontend engineer": 5,
+    "full stack engineer": 5,
+    "platform engineer": 5,
     "data engineer": 5,
 
     "machine learning engineer": 6,
@@ -89,26 +89,21 @@ SENIORITY = {
     "research engineer": 6,
     "applied scientist": 6,
     "data scientist": 6,
+    "computer vision engineer": 6,
+    "nlp engineer": 6,
+    "llm engineer": 6,
+    "genai engineer": 6,
 
     "senior": 7,
-
     "lead": 8,
-
     "staff": 9,
-
     "principal": 10,
-
     "architect": 10,
-
     "manager": 11,
-
     "director": 12,
-
     "vp": 13,
-
     "chief": 14
 }
-
 
 def career_progression_score(candidate):
 
@@ -127,21 +122,20 @@ def career_progression_score(candidate):
 
         level = 0
 
-        level = 0
+        for keyword, value in SENIORITY.items():
 
-    for keyword, value in SENIORITY.items():
+            if keyword in title:
 
-        if keyword in title:
+                level = max(level, value)
 
-            level = max(level, value)
-    levels.append(level)
+        levels.append(level)
+
     comparisons = len(levels) - 1
 
     if comparisons <= 0:
         return 50
-    score = 0
 
-    comparisons = len(levels) - 1
+    score = 0
 
     for i in range(comparisons):
 
@@ -149,15 +143,10 @@ def career_progression_score(candidate):
         nxt = levels[i + 1]
 
         if nxt > current:
-            score += 1.0          # Promotion
+            score += 1.0
 
         elif nxt == current:
-            score += 0.5          # Same level
-
-        else:
-            score += 0.0          # Demotion
-
-    
+            score += 0.5
 
     return (score / comparisons) * 100
 
@@ -283,16 +272,19 @@ def calculate_career_score(
     evaluation=calculate_evaluation_score(candidate)
     career = (
 
-        0.28 * years +
+        0.24 * years +
 
-        0.22 * relevant +
+    0.20 * relevant +
 
-        0.18 * consulting +
+    0.14 * consulting +
 
-        0.15 * stability +
+    0.13 * stability +
 
-        0.10 * current+
-        0.07 * evaluation["evaluation_score"]
+    0.10 * current +
+
+    0.09 * progression +
+
+    0.10 * evaluation["evaluation_score"]
 
     )
 
@@ -317,6 +309,11 @@ def calculate_career_score(
             stability,
             2
         ),
+        
+        "career_progression_score": round(
+    progression,
+    2
+),
 
         "current_role_score": round(
             current,
